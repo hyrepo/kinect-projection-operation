@@ -14,17 +14,17 @@ using	namespace	cv;
 Vec3b	COLOR_TABLE[] = { Vec3b(255,0,0),Vec3b(0,255,0),Vec3b(0,0,255),Vec3b(255,255,255),Vec3b(0,0,0) ,Vec3b{ 255,0,255 } };
 enum { BLUE, GREEN, RED, WHITE, BLACK, YELLOW };
 
-const	int	MIN_DISTANCE = 25;				//Éî¶ÈÍ¼ÖĞÆÁÄ»äÖÈ¾Çø×îĞ¡¾àÀë,µ¥Î»ÎªºÁÃ×
-const	int	MAX_DISTANCE = 250;				//Éî¶ÈÍ¼ÖĞÆÁÄ»äÖÈ¾Çø×î´ó¾àÀë,µ¥Î»ÎªºÁÃ×
-const	int	DEPTH_AVE_E = 10;				//ÇóÆÁÄ»Æ½¾ùÉî¶Èºó£¬ÓÃ´ËÆ½¾ùÉî¶ÈÈ¥É¸·Ç·¨µãµÄãĞÖµ,µ¥Î»ÎªºÁÃ×
-const	int	FINGER_DEPTH_E = 100;				//ÅĞ¶ÏÊÖÖ¸ÊÇ·ñ´¥ÅöÆÁÄ»µÄÖµ£¬µ¥Î»ÎªºÁÃ×
-const	int	FINGER_DISTANCE_E = 200;			//ÅĞ¶ÏÊÖÖ¸Î»ÖÃÍ»ÔöµÄÖµ,µ¥Î»ÎªÏñËØ
-const	int	FINGER_MOVE_E = 2;				//ÅĞ¶ÏÊÖÖ¸Î¢Ğ¡¶¶¶¯µÄÖµ,µ¥Î»ÎªÏñËØ
-const	int	BGR_E = 45;					//ÆÁÄ»Ê¶±ğÊ±µÄ²ÊÉ«Îó²î,×î´ó255
-const	int	AUTO_SEC = 5;					//×Ô¶¯Ñ¡È¡Ê¶±ğ»ùµãµÄ¶ÁÃëÊı,²»µÃ³¬¹ıÏÂ·½VISÊı×éµÄÈİÁ¿
+const	int	MIN_DISTANCE = 25;				//æ·±åº¦å›¾ä¸­å±å¹•æ¸²æŸ“åŒºæœ€å°è·ç¦»,å•ä½ä¸ºæ¯«ç±³
+const	int	MAX_DISTANCE = 250;				//æ·±åº¦å›¾ä¸­å±å¹•æ¸²æŸ“åŒºæœ€å¤§è·ç¦»,å•ä½ä¸ºæ¯«ç±³
+const	int	DEPTH_AVE_E = 10;				//æ±‚å±å¹•å¹³å‡æ·±åº¦åï¼Œç”¨æ­¤å¹³å‡æ·±åº¦å»ç­›éæ³•ç‚¹çš„é˜ˆå€¼,å•ä½ä¸ºæ¯«ç±³
+const	int	FINGER_DEPTH_E = 100;				//åˆ¤æ–­æ‰‹æŒ‡æ˜¯å¦è§¦ç¢°å±å¹•çš„å€¼ï¼Œå•ä½ä¸ºæ¯«ç±³
+const	int	FINGER_DISTANCE_E = 200;			//åˆ¤æ–­æ‰‹æŒ‡ä½ç½®çªå¢çš„å€¼,å•ä½ä¸ºåƒç´ 
+const	int	FINGER_MOVE_E = 2;				//åˆ¤æ–­æ‰‹æŒ‡å¾®å°æŠ–åŠ¨çš„å€¼,å•ä½ä¸ºåƒç´ 
+const	int	BGR_E = 45;					//å±å¹•è¯†åˆ«æ—¶çš„å½©è‰²è¯¯å·®,æœ€å¤§255
+const	int	AUTO_SEC = 5;					//è‡ªåŠ¨é€‰å–è¯†åˆ«åŸºç‚¹çš„è¯»ç§’æ•°,ä¸å¾—è¶…è¿‡ä¸‹æ–¹VISæ•°ç»„çš„å®¹é‡
 int	COLORHEIGHT = 0, COLORWIDTH = 0;
 int	DEPTHWIDTH = 0, DEPTHHEIGHT = 0;
-bool	VIS[100] = { false };					//ÓÃÀ´¶ÁÃëµÄÊı×é
+bool	VIS[100] = { false };					//ç”¨æ¥è¯»ç§’çš„æ•°ç»„
 
 bool	find_edge(const Mat &, const Point &, int &, int &, int &, int &);
 bool	check_depth_coordinate(int, int);
@@ -44,7 +44,7 @@ int	main(void)
 	myColorSource->get_FrameDescription(&myDescription);
 	myDescription->get_Height(&COLORHEIGHT);
 	myDescription->get_Width(&COLORWIDTH);
-	myColorSource->OpenReader(&myColorReader);			//ÒÔÉÏÎªColorÖ¡µÄ×¼±¸£¬Ö±½Ó¿ªºÃReader
+	myColorSource->OpenReader(&myColorReader);			//ä»¥ä¸Šä¸ºColorå¸§çš„å‡†å¤‡ï¼Œç›´æ¥å¼€å¥½Reader
 
 
 	IDepthFrameSource	* myDepthSource = nullptr;
@@ -54,18 +54,18 @@ int	main(void)
 	myDepthSource->get_FrameDescription(&myDescription);
 	myDescription->get_Height(&DEPTHHEIGHT);
 	myDescription->get_Width(&DEPTHWIDTH);
-	myDepthSource->OpenReader(&myDepthReader);			//ÒÔÉÏÎªDepthÖ¡µÄ×¼±¸£¬Ö±½Ó¿ªºÃReader
+	myDepthSource->OpenReader(&myDepthReader);			//ä»¥ä¸Šä¸ºDepthå¸§çš„å‡†å¤‡ï¼Œç›´æ¥å¼€å¥½Reader
 
 
 	IBodyFrameSource	* myBodySource = nullptr;
 	IBodyFrameReader	* myBodyReader = nullptr;
 	IBodyFrame		* myBodyFrame = nullptr;
 	mySensor->get_BodyFrameSource(&myBodySource);
-	myBodySource->OpenReader(&myBodyReader);			//ÒÔÉÏÎªBodyÖ¡µÄ×¼±¸£¬Ö±½Ó¿ªºÃReader
+	myBodySource->OpenReader(&myBodyReader);			//ä»¥ä¸Šä¸ºBodyå¸§çš„å‡†å¤‡ï¼Œç›´æ¥å¼€å¥½Reader
 
 
 	ICoordinateMapper	* myMapper = nullptr;
-	mySensor->get_CoordinateMapper(&myMapper);			//MaperµÄ×¼±¸
+	mySensor->get_CoordinateMapper(&myMapper);			//Maperçš„å‡†å¤‡
 
 
 
@@ -97,18 +97,18 @@ int	main(void)
 	bool	firstRun = true;
 	while (1)
 	{
-		Mat	colorImg(COLORHEIGHT, COLORWIDTH, CV_8UC4);									//¶Á²ÊÉ«Êı¾İ
+		Mat	colorImg(COLORHEIGHT, COLORWIDTH, CV_8UC4);									//è¯»å½©è‰²æ•°æ®
 		while (myColorReader->AcquireLatestFrame(&myColorFrame) != S_OK);
 		myColorFrame->CopyConvertedFrameDataToArray(COLORHEIGHT * COLORWIDTH * 4, colorImg.data, ColorImageFormat_Bgra);
 
 
-		Mat	depthImg(DEPTHHEIGHT, DEPTHWIDTH, CV_8UC3);									//¶ÁÉî¶ÈÊı¾İ
+		Mat	depthImg(DEPTHHEIGHT, DEPTHWIDTH, CV_8UC3);									//è¯»æ·±åº¦æ•°æ®
 		UINT16	* depthData = new UINT16[DEPTHHEIGHT * DEPTHWIDTH];
 		while (myDepthReader->AcquireLatestFrame(&myDepthFrame) != S_OK);
 		myDepthFrame->CopyFrameDataToArray(DEPTHHEIGHT * DEPTHWIDTH, depthData);
 
 
-		int	bodyCount;													//¶ÁÉíÌåÊı¾İ
+		int	bodyCount;													//è¯»èº«ä½“æ•°æ®
 		myBodySource->get_BodyCount(&bodyCount);
 		IBody	** bodyArr = new IBody *[bodyCount];
 		for (int i = 0; i < bodyCount; i++)
@@ -116,7 +116,7 @@ int	main(void)
 		while (myBodyReader->AcquireLatestFrame(&myBodyFrame) != S_OK);
 		myBodyFrame->GetAndRefreshBodyData(bodyCount, bodyArr);
 
-		//´ÓÉíÌåÊı¾İÖĞ»ñÈ¡ÓÒÊÖ(Êµ¼ÊÉÏÊÇ×óÊÖ)µÄ×´Ì¬,ÅĞ¶ÏÊÇ·ñ³·Ïú
+		//ä»èº«ä½“æ•°æ®ä¸­è·å–å³æ‰‹(å®é™…ä¸Šæ˜¯å·¦æ‰‹)çš„çŠ¶æ€,åˆ¤æ–­æ˜¯å¦æ’¤é”€
 		bool	undo = false;
 		double	spineHeight = 0, handHeight = 0;
 		for (int i = 0; i < bodyCount; i++)
@@ -126,7 +126,7 @@ int	main(void)
 			{
 				HandState	rightState;
 				bodyArr[i]->get_HandRightState(&rightState);
-				if (rightState == HandState_Closed)									//È·¶¨Òªµ÷ÓÃ³·Ïú
+				if (rightState == HandState_Closed)									//ç¡®å®šè¦è°ƒç”¨æ’¤é”€
 					undo = true;
 
 				Joint	* jointArr = new Joint[JointType_Count];
@@ -143,16 +143,16 @@ int	main(void)
 
 		if (firstRun)
 		{
-			printf("Çë½«Kinect°Ú·ÅÔÚÍ¶Ó°ÃæµÄÕıÇ°·½£¬¾¡Á¿Æ½ĞĞÓÚÍ¶Ó°Ãæ£¬È»ºó½«Í¶Ó°ÃæÉèÎª´¿É«µÄÈ«ÆÁ£¬%dÃëºó½«»ùÓÚ´ËÑÕÉ«½øĞĞÍ¶Ó°ÃæÊ¶±ğ,ÇëÓÚ%dÃëºó²é¿´Ê¶±ğ½á¹û\n", AUTO_SEC,AUTO_SEC);
+			printf("è¯·å°†Kinectæ‘†æ”¾åœ¨æŠ•å½±é¢çš„æ­£å‰æ–¹ï¼Œå°½é‡å¹³è¡ŒäºæŠ•å½±é¢ï¼Œç„¶åå°†æŠ•å½±é¢è®¾ä¸ºçº¯è‰²çš„å…¨å±ï¼Œ%dç§’åå°†åŸºäºæ­¤é¢œè‰²è¿›è¡ŒæŠ•å½±é¢è¯†åˆ«,è¯·äº%dç§’åæŸ¥çœ‹è¯†åˆ«ç»“æœ\n", AUTO_SEC,AUTO_SEC);
 			startTime = clock();
 			firstRun = false;
 			fill(VIS,VIS + 100,false);
 		}
 
-		//×Ô¶¯¶ÁÃëÑ¡È¡ÆÁÄ»Ê¶±ğµã
+		//è‡ªåŠ¨è¯»ç§’é€‰å–å±å¹•è¯†åˆ«ç‚¹
 		if (!gotColorCenter)
 		{
-			circle(colorImg, center, 15, COLOR_TABLE[RED], -1);					//»­³öÆÁÄ»ÖĞĞÄµã
+			circle(colorImg, center, 15, COLOR_TABLE[RED], -1);					//ç”»å‡ºå±å¹•ä¸­å¿ƒç‚¹
 
 			firstRun = false;
 			curTime = clock();
@@ -170,10 +170,10 @@ int	main(void)
 					puts("");
 				}
 			}
-			goto	release;									//ÒªReleaseÒ»´Î£¬ÒòÎª´ËÊ±ÒÑ¾­½«µã»­µ½ÁË»­ÃæÉÏ£¬Ê¶±ğ»á±»»­ÉÏµÄµã¸ÉÈÅ
+			goto	release;									//è¦Releaseä¸€æ¬¡ï¼Œå› ä¸ºæ­¤æ—¶å·²ç»å°†ç‚¹ç”»åˆ°äº†ç”»é¢ä¸Šï¼Œè¯†åˆ«ä¼šè¢«ç”»ä¸Šçš„ç‚¹å¹²æ‰°
 		}
 
-		//ÈôÄ¿Ç°»¹Ã»ÓĞÊ¶±ğ³öÆÁÄ»£¬Ôò»ùÓÚÑ¡ÖĞµÄÖĞĞÄµãÀ´ÕÒÆÁÄ»
+		//è‹¥ç›®å‰è¿˜æ²¡æœ‰è¯†åˆ«å‡ºå±å¹•ï¼Œåˆ™åŸºäºé€‰ä¸­çš„ä¸­å¿ƒç‚¹æ¥æ‰¾å±å¹•
 		if (!gotColorScreen && gotColorCenter)
 			if (!find_edge(colorImg, center, colorLeft, colorRight, colorUp, colorButtom))
 				goto	release;
@@ -182,9 +182,9 @@ int	main(void)
 
 
 		if (gotColorScreen)
-			draw_screen(colorImg, colorLeft, colorRight, colorUp, colorButtom);							//ÖÁ´Ë²ÊÉ«ÆÁÄ»ÒÑ¾­ÕÒµ½ÁË£¬»­³öÆÁÄ»±ß¿ò
+			draw_screen(colorImg, colorLeft, colorRight, colorUp, colorButtom);							//è‡³æ­¤å½©è‰²å±å¹•å·²ç»æ‰¾åˆ°äº†ï¼Œç”»å‡ºå±å¹•è¾¹æ¡†
 
-																		//°Ñ²ÊÉ«Êı¾İÀïÊ¶±ğ³öµÄÆÁÄ»µÄ×ø±ê×ª»»µ½Éî¶È¿Õ¼ä,²¢Çó³öµ½ÆÁÄ»µÄÆ½¾ù¾àÀë,Ö»ÇóÒ»´Î											
+																		//æŠŠå½©è‰²æ•°æ®é‡Œè¯†åˆ«å‡ºçš„å±å¹•çš„åæ ‡è½¬æ¢åˆ°æ·±åº¦ç©ºé—´,å¹¶æ±‚å‡ºåˆ°å±å¹•çš„å¹³å‡è·ç¦»,åªæ±‚ä¸€æ¬¡											
 		bool	mapSuccessed = true;
 		if (!gotDepthScreen && !failMessage)
 		{
@@ -192,7 +192,7 @@ int	main(void)
 			DepthSpacePoint		* colorMapArray = new DepthSpacePoint[COLORHEIGHT * COLORWIDTH];
 			myMapper->MapColorFrameToDepthSpace(DEPTHHEIGHT * DEPTHWIDTH, depthData, COLORHEIGHT * COLORWIDTH, colorMapArray);
 
-			//¼ì²é×ª»»ºóµÄ×ø±êÊÇ·ñºÏ·¨
+			//æ£€æŸ¥è½¬æ¢åçš„åæ ‡æ˜¯å¦åˆæ³•
 			if (check_depth_coordinate(colorMapArray[colorUp * COLORWIDTH + colorLeft].X, colorMapArray[colorUp * COLORWIDTH + colorLeft].Y))
 				depthLeftUp = colorMapArray[colorUp * COLORWIDTH + colorLeft];
 			else
@@ -204,12 +204,12 @@ int	main(void)
 			depthLeft = (int)depthLeftUp.X, depthRight = (int)depthRightButtom.X, depthUp = (int)depthLeftUp.Y, depthButtom = (int)depthRightButtom.Y;
 
 
-			if (!depthLeft || !depthRight || !depthUp || !depthButtom)							//¼ì²é×ª»»ºóµÄ×ø±êÊÇ·ñÎª0
+			if (!depthLeft || !depthRight || !depthUp || !depthButtom)							//æ£€æŸ¥è½¬æ¢åçš„åæ ‡æ˜¯å¦ä¸º0
 				mapSuccessed = false;
 
 			delete[] colorMapArray;
-			//ÖÁ´Ë×ø±êºÏ·¨£¬¿ªÊ¼ÅĞ¶ÏÉî¶ÈÊÇ·ñºÏ·¨
-			if (mapSuccessed)												//µÚÒ»±éÉ¨ÃèÇó³öËùÓĞµã¾àÀëµÄÆ½¾ùÖµ
+			//è‡³æ­¤åæ ‡åˆæ³•ï¼Œå¼€å§‹åˆ¤æ–­æ·±åº¦æ˜¯å¦åˆæ³•
+			if (mapSuccessed)												//ç¬¬ä¸€éæ‰«ææ±‚å‡ºæ‰€æœ‰ç‚¹è·ç¦»çš„å¹³å‡å€¼
 			{
 				int	sum = 0;
 				int	count = 0;
@@ -229,7 +229,7 @@ int	main(void)
 				else
 					screenDepth = sum / count;
 
-				if (mapSuccessed)											//µÚ¶ş±é¸ù¾İÉÏÃæÇó³öµÄÆ½¾ùÖµ£¬É¸È¥¾àÀë·Ç·¨µÄµã
+				if (mapSuccessed)											//ç¬¬äºŒéæ ¹æ®ä¸Šé¢æ±‚å‡ºçš„å¹³å‡å€¼ï¼Œç­›å»è·ç¦»éæ³•çš„ç‚¹
 				{
 					sum = count = 0;
 					for (int i = depthUp + 10; i < depthButtom - 10; i++)
@@ -246,32 +246,32 @@ int	main(void)
 						mapSuccessed = false;
 					else
 					{
-						screenDepth = sum / count;								//×îºóÇó³öÆÁÄ»Æ½¾ù¾àÀë
+						screenDepth = sum / count;								//æœ€åæ±‚å‡ºå±å¹•å¹³å‡è·ç¦»
 						if (!screenDepth)
 							mapSuccessed = false;
-						else											//ÖÁ´Ë×ø±ê¡¢Éî¶È¶¼ºÏ·¨
+						else											//è‡³æ­¤åæ ‡ã€æ·±åº¦éƒ½åˆæ³•
 						{
 							gotDepthScreen = true;
-							printf("ÉãÏñÍ·µ½Í¶Ó°ÃæµÄ¾àÀë=%.2lfÃ×\n\n", (double)screenDepth / 1000);
+							printf("æ‘„åƒå¤´åˆ°æŠ•å½±é¢çš„è·ç¦»=%.2lfç±³\n\n", (double)screenDepth / 1000);
 						}
 					}
 				}
 			}
 		}
 
-		//ÈôÆÁÄ»¾àÀë¼ÆËãÊ§°Ü£¬ÔòÊä³öÌáÊ¾ĞÅÏ¢
+		//è‹¥å±å¹•è·ç¦»è®¡ç®—å¤±è´¥ï¼Œåˆ™è¾“å‡ºæç¤ºä¿¡æ¯
 		if (gotColorScreen && !gotDepthScreen && !failMessage)
 		{
-			printf("Î´³É¹¦¼ÆËã³öµ½Í¶Ó°ÃæµÄ¾àÀë£¬ÇëÈ·±£KinectÎ»ÖÃÔÚÍ¶Ó°ÃæÕıÇ°·½2-3Ã×´¦£¬ÓëÍ¶Ó°ÃæÆ½ĞĞ£¬È»ºó°´F5ÖØĞÂÊ¶±ğ\n\n");
+			printf("æœªæˆåŠŸè®¡ç®—å‡ºåˆ°æŠ•å½±é¢çš„è·ç¦»ï¼Œè¯·ç¡®ä¿Kinectä½ç½®åœ¨æŠ•å½±é¢æ­£å‰æ–¹2-3ç±³å¤„ï¼Œä¸æŠ•å½±é¢å¹³è¡Œï¼Œç„¶åæŒ‰F5é‡æ–°è¯†åˆ«\n\n");
 			failMessage = true;
 		}
 
-		//ÈôÒÔÉÏ×ª»»³É¹¦£¬Ôò¶ÔÉî¶ÈÍ¼½øĞĞäÖÈ¾,È»ºó»­³öÆÁÄ»,×îºóÔÚÀïÃæÕÒÖ¸¼â
+		//è‹¥ä»¥ä¸Šè½¬æ¢æˆåŠŸï¼Œåˆ™å¯¹æ·±åº¦å›¾è¿›è¡Œæ¸²æŸ“,ç„¶åç”»å‡ºå±å¹•,æœ€ååœ¨é‡Œé¢æ‰¾æŒ‡å°–
 		gotFinger = false;
 		fingerPoint = { 0,0 };
 		if (mapSuccessed)
 		{
-			for (int i = depthUp; i < depthButtom; i++)									//µÚÒ»±éäÖÈ¾
+			for (int i = depthUp; i < depthButtom; i++)									//ç¬¬ä¸€éæ¸²æŸ“
 				for (int j = depthLeft; j < depthRight; j++)
 				{
 					int	index = i * DEPTHWIDTH + j;
@@ -281,7 +281,7 @@ int	main(void)
 						depthImg.at<Vec3b>(i, j) = COLOR_TABLE[BLACK];
 				}
 
-			Mat	temp;													//µÚ¶ş±éäÖÈ¾,È¥³ı±ßÔµ
+			Mat	temp;													//ç¬¬äºŒéæ¸²æŸ“,å»é™¤è¾¹ç¼˜
 			depthImg.copyTo(temp);
 			for (int i = depthUp; i < depthButtom; i++)
 				for (int j = depthLeft; j < depthRight; j++)
@@ -302,10 +302,10 @@ int	main(void)
 
 			depthImg = temp;
 
-			draw_screen(depthImg, depthLeft, depthRight, depthUp, depthButtom);						//äÖÈ¾Íêºó£¬¿ªÊ¼»­ÆÁÄ»±ßÔµ
+			draw_screen(depthImg, depthLeft, depthRight, depthUp, depthButtom);						//æ¸²æŸ“å®Œåï¼Œå¼€å§‹ç”»å±å¹•è¾¹ç¼˜
 
 
-			for (int i = depthUp; i <= depthButtom; i++)									//Ö¸¼âÊ¶±ğ2£¬È¡×î¸ßµãÎªÖ¸¼â
+			for (int i = depthUp; i <= depthButtom; i++)									//æŒ‡å°–è¯†åˆ«2ï¼Œå–æœ€é«˜ç‚¹ä¸ºæŒ‡å°–
 			{
 				gotFinger = false;
 				for (int j = depthLeft; j < depthRight; j++)
@@ -319,21 +319,21 @@ int	main(void)
 				if (gotFinger)
 					break;
 			}
-			//ÅĞ¶ÏÖ¸¼âµÄÎ»ÖÃÊÇ·ñÔÚÆÁÄ»¿òÄÚ
+			//åˆ¤æ–­æŒ‡å°–çš„ä½ç½®æ˜¯å¦åœ¨å±å¹•æ¡†å†…
 			if (!(fingerPoint.x >= depthLeft && fingerPoint.y <= depthRight && fingerPoint.y >= depthUp && fingerPoint.y <= depthButtom))
 				gotFinger = false;
 		}
 
-		//Èç¹ûÕÒµ½ÁËÖ¸¼â£¬Ôò¶ÔÖ¸¼â½øĞĞ´¦Àí
+		//å¦‚æœæ‰¾åˆ°äº†æŒ‡å°–ï¼Œåˆ™å¯¹æŒ‡å°–è¿›è¡Œå¤„ç†
 		if (gotFinger)
 		{
 			if (frontFingerPoint.x == -1)
 				frontFingerPoint = fingerPoint;
-			//ÅĞ¶ÏÊÇ·ñÓĞ¾àÀëÍ»Ôöµã
+			//åˆ¤æ–­æ˜¯å¦æœ‰è·ç¦»çªå¢ç‚¹
 			if (sqrt(pow(fingerPoint.x - frontFingerPoint.x, 2) + pow(fingerPoint.y - frontFingerPoint.y, 2)) >= FINGER_DISTANCE_E
 				&& depthImg.at<Vec3b>(frontFingerPoint.y, frontFingerPoint.x) == COLOR_TABLE[GREEN])
 				fingerPoint = frontFingerPoint;
-			//ÅĞ¶ÏÊÇ·ñÒÆ¶¯ºÜÎ¢Ğ¡
+			//åˆ¤æ–­æ˜¯å¦ç§»åŠ¨å¾ˆå¾®å°
 			if ((abs(fingerPoint.x - frontFingerPoint.x) <= FINGER_MOVE_E && abs(fingerPoint.y - frontFingerPoint.y) <= FINGER_MOVE_E))
 				fingerPoint = frontFingerPoint;
 			else
@@ -341,7 +341,7 @@ int	main(void)
 		}
 
 
-		//µ÷ÓÃÊó±ê
+		//è°ƒç”¨é¼ æ ‡
 		if (gotFinger && work)
 		{
 			fingerPoint.y += 1;
@@ -362,7 +362,7 @@ int	main(void)
 			}
 			gotFrontFinger = true;
 		}
-		//¶ÔÊó±ê¶ªÊ§ĞŞÕıÒ»´Î
+		//å¯¹é¼ æ ‡ä¸¢å¤±ä¿®æ­£ä¸€æ¬¡
 		else	if (gotFrontFinger && work)
 		{
 			fingerPoint = frontFingerPoint;
@@ -386,23 +386,23 @@ int	main(void)
 
 
 
-		//ÅĞ¶ÏÊÇ·ñµ½ÁË½«FlagÖÃÕæµÄ´°¿Ú
+		//åˆ¤æ–­æ˜¯å¦åˆ°äº†å°†Flagç½®çœŸçš„çª—å£
 		curTime = clock();
 		if (curTime >= nextUndoTime && !undoFlag)
 			undoFlag = true;
-		//µ÷ÓÃ¼üÅÌ³·Ïú
+		//è°ƒç”¨é”®ç›˜æ’¤é”€
 		if (undo && undoFlag && handHeight > spineHeight)
 		{
 			keybd_event(VK_CONTROL, 0, 0, 0);
 			keybd_event(0x5A, 0, 0, 0);
 			keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);
 			keybd_event(0x5A, 0, KEYEVENTF_KEYUP, 0);
-			nextUndoTime = curTime + 500;											//½«FlagÖÃÎª¼Ù£¬²¢½«ÏÂÒ»¸ö½«FlagÖÃÕæµÄ´°¿ÚÉè¶¨ÔÚ500msºó
+			nextUndoTime = curTime + 500;											//å°†Flagç½®ä¸ºå‡ï¼Œå¹¶å°†ä¸‹ä¸€ä¸ªå°†Flagç½®çœŸçš„çª—å£è®¾å®šåœ¨500mså
 			undoFlag = false;
 		}
 
 
-		for (int i = 0; i < DEPTHHEIGHT; i++)											//»­Ãæ×ö¾µÏñ×ª»»
+		for (int i = 0; i < DEPTHHEIGHT; i++)											//ç”»é¢åšé•œåƒè½¬æ¢
 			for (int j = 0, k = DEPTHWIDTH - 1; j < DEPTHWIDTH / 2 + 1; j++, k--)
 				swap(depthImg.at<Vec3b>(i, j), depthImg.at<Vec3b>(i, k));
 
@@ -410,24 +410,24 @@ int	main(void)
 		if (gotDepthScreen && !failMessage)
 		{
 			failMessage = true;
-			printf("Ê¶±ğÍê³É.Çë²é¿´²é¿´COLOR´°¿Ú£¬È·±£Í¶Ó°ÃæµÄ±ßÔµºÍºìÉ«¿ò»ù±¾ÎÇºÏ£¬È»ºó²é¿´DEPTH´°¿Ú£¬¼ì²éÊÇ·ñÓĞÂÌÉ«µÄÍ¼Ïñ³öÏÖ.\n");
-			printf("ÂÌÉ«Í¼ÏñµÄ³öÏÖ´ú±í×ÅKinectÉãÏñÍ·µÄÏàÓ¦Î»ÖÃ¾àÀëÆÁÄ»Ì«½ü£¬±ÈÈçÂÌÉ«µã³öÏÖÔÚ»­Ãæ×óÏÂ·½£¬¾Í´ú±íÉãÏñÍ·×ó±ß±ÈÓÒ±ß¸ü¿¿½üÆÁÄ»¡¢ÏÂÃæ±ÈÉÏÃæ¸ü¿¿½üÆÁÄ»£¬\n");
-			printf("Çë¸ù¾İÍ¼ÏñÎ¢µ÷KinectµÄÎ»ÖÃ£¬Ö±µ½ÂÌÉ«µãÍêÈ«ÏûÊ§£¬´ËÊ±KinectÓ¦¸Ã»ù±¾Æ½ĞĞÓÚÍ¶Ó°Ãæ.È»ºó°´F5ÖØĞÂ½ÃÕı.\n");
-			printf("ÇëÈ·±£»­Ãæ¸É¾»ÇÒÊ¶±ğÇøÕıÈ·ÔÙ¼¤»î³ÌĞò£¬¼¤»îºó»á¿ªÆô¶ÔÊó±êµÄµ÷ÓÃ£¬ÂÌÉ«µãµÄ´æÔÚ»á¸ÉÈÅÊó±êÎ»ÖÃ\n");
-			printf("¼¤»î³ÌĞòÇë°´F1.\n\n");
+			printf("è¯†åˆ«å®Œæˆ.è¯·æŸ¥çœ‹æŸ¥çœ‹COLORçª—å£ï¼Œç¡®ä¿æŠ•å½±é¢çš„è¾¹ç¼˜å’Œçº¢è‰²æ¡†åŸºæœ¬å»åˆï¼Œç„¶åæŸ¥çœ‹DEPTHçª—å£ï¼Œæ£€æŸ¥æ˜¯å¦æœ‰ç»¿è‰²çš„å›¾åƒå‡ºç°.\n");
+			printf("ç»¿è‰²å›¾åƒçš„å‡ºç°ä»£è¡¨ç€Kinectæ‘„åƒå¤´çš„ç›¸åº”ä½ç½®è·ç¦»å±å¹•å¤ªè¿‘ï¼Œæ¯”å¦‚ç»¿è‰²ç‚¹å‡ºç°åœ¨ç”»é¢å·¦ä¸‹æ–¹ï¼Œå°±ä»£è¡¨æ‘„åƒå¤´å·¦è¾¹æ¯”å³è¾¹æ›´é è¿‘å±å¹•ã€ä¸‹é¢æ¯”ä¸Šé¢æ›´é è¿‘å±å¹•ï¼Œ\n");
+			printf("è¯·æ ¹æ®å›¾åƒå¾®è°ƒKinectçš„ä½ç½®ï¼Œç›´åˆ°ç»¿è‰²ç‚¹å®Œå…¨æ¶ˆå¤±ï¼Œæ­¤æ—¶Kinectåº”è¯¥åŸºæœ¬å¹³è¡ŒäºæŠ•å½±é¢.ç„¶åæŒ‰F5é‡æ–°çŸ«æ­£.\n");
+			printf("è¯·ç¡®ä¿ç”»é¢å¹²å‡€ä¸”è¯†åˆ«åŒºæ­£ç¡®å†æ¿€æ´»ç¨‹åºï¼Œæ¿€æ´»åä¼šå¼€å¯å¯¹é¼ æ ‡çš„è°ƒç”¨ï¼Œç»¿è‰²ç‚¹çš„å­˜åœ¨ä¼šå¹²æ‰°é¼ æ ‡ä½ç½®\n");
+			printf("æ¿€æ´»ç¨‹åºè¯·æŒ‰F1.\n\n");
 		}
-		if (GetKeyState(VK_F1) < 0)												//Èô¶ÔĞ§¹û²»ÂúÒâ£¬Ôò¿ÉÒÔÔÚÏÂÒ»´ÎÑ­»·ÖĞÖØĞÂÊ¶±ğ
+		if (GetKeyState(VK_F1) < 0)												//è‹¥å¯¹æ•ˆæœä¸æ»¡æ„ï¼Œåˆ™å¯ä»¥åœ¨ä¸‹ä¸€æ¬¡å¾ªç¯ä¸­é‡æ–°è¯†åˆ«
 		{
-			printf("³ÌĞò¼¤»î!\n\n");
+			printf("ç¨‹åºæ¿€æ´»!\n\n");
 			work = true;
 		}
-		if (GetKeyState(VK_F5) < 0)												//Èô¶ÔĞ§¹û²»ÂúÒâ£¬Ôò¿ÉÒÔÔÚÏÂÒ»´ÎÑ­»·ÖĞÖØĞÂÊ¶±ğ
+		if (GetKeyState(VK_F5) < 0)												//è‹¥å¯¹æ•ˆæœä¸æ»¡æ„ï¼Œåˆ™å¯ä»¥åœ¨ä¸‹ä¸€æ¬¡å¾ªç¯ä¸­é‡æ–°è¯†åˆ«
 		{
 			gotColorCenter = gotColorScreen = gotDepthScreen = failMessage = work = false;
 			firstRun = true;
 		}
 
-		release:														//ÏÔÊ¾Í¼Ïñ²¢ÊÍ·ÅFrame
+		release:														//æ˜¾ç¤ºå›¾åƒå¹¶é‡Šæ”¾Frame
 
 		imshow("COLOR", colorImg);
 		imshow("DEPTH", depthImg);
@@ -442,19 +442,19 @@ int	main(void)
 
 
 
-	myDepthReader->Release();		//ÊÍ·ÅDepth
+	myDepthReader->Release();		//é‡Šæ”¾Depth
 	myDepthSource->Release();
 
-	myColorReader->Release();		//ÊÍ·ÅColor
+	myColorReader->Release();		//é‡Šæ”¾Color
 	myColorSource->Release();
 
-	myBodyReader->Release();		//ÊÍ·ÅBody
+	myBodyReader->Release();		//é‡Šæ”¾Body
 	myBodySource->Release();
 
-	myMapper->Release();			//ÊÍ·Å¹«¹²×ÊÔ´
+	myMapper->Release();			//é‡Šæ”¾å…¬å…±èµ„æº
 	myDescription->Release();
 
-	mySensor->Close();			//ÊÍ·ÅSensor
+	mySensor->Close();			//é‡Šæ”¾Sensor
 	mySensor->Release();
 
 
